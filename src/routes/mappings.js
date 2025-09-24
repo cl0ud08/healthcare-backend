@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mappingController = require('../controllers/mappingController');
-const authenticateToken = require('../middlewares/auth');
+const { authenticateToken } = require('../middlewares/auth');
 const { mappingValidator, idParamValidator, patientIdParamValidator } = require('../middlewares/validators');
 const { validationResult } = require('express-validator');
 
