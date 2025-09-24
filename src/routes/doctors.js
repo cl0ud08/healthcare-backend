@@ -1,0 +1,22 @@
+const express = require('express');
+const router = express.Router();
+const doctorController = require('../controllers/doctorController');
+const authenticateToken = require('../middlewares/auth');
+const { doctorValidator, idParamValidator } = require('../middlewares/validators');
+const { validationResult } = require('express-validator');
+
+function handleValidation(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+}
+
+router.post('/', authenticateToken, doctorValidator, handleValidation, doctorController.createDoctor);
+router.get('/', authenticateToken, doctorController.getDoctors);
+router.get('/:id', authenticateToken, idParamValidator, handleValidation, doctorController.getDoctorById);
+router.put('/:id', authenticateToken, idParamValidator, doctorValidator, handleValidation, doctorController.updateDoctor);
+router.delete('/:id', authenticateToken, idParamValidator, handleValidation, doctorController.deleteDoctor);
+
+module.exports = router;
