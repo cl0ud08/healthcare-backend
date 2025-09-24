@@ -1,22 +1,54 @@
-const express = require('express');
-const router = express.Router();
-const patientController = require('../controllers/patientController');
-const authenticateToken = require('../middlewares/auth');
-const { patientValidator, idParamValidator } = require('../middlewares/validators');
-const { validationResult } = require('express-validator');
+// controllers/patientController.js
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-function handleValidation(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+module.exports = {
+  createPatient: async (req, res) => {
+    try {
+      const patient = await prisma.patient.create({ data: req.body });
+      res.status(201).json(patient);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getPatients: async (req, res) => {
+    try {
+      const patients = await prisma.patient.findMany({ where: { userId: req.user.id } });
+      res.json(patients);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getPatientById: async (req, res) => {
+    try {
+      const patient = await prisma.patient.findUnique({ where: { id: parseInt(req.params.id) } });
+      if (!patient) return res.status(404).json({ error: 'Patient not found' });
+      res.json(patient);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  updatePatient: async (req, res) => {
+    try {
+      const patient = await prisma.patient.update({
+        where: { id: parseInt(req.params.id) },
+        data: req.body
+      });
+      res.json(patient);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  deletePatient: async (req, res) => {
+    try {
+      await prisma.patient.delete({ where: { id: parseInt(req.params.id) } });
+      res.json({ message: 'Patient deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-  next();
-}
-
-router.post('/', authenticateToken, patientValidator, handleValidation, patientController.createPatient);
-router.get('/', authenticateToken, patientController.getPatients);
-router.get('/:id', authenticateToken, idParamValidator, handleValidation, patientController.getPatientById);
-router.put('/:id', authenticateToken, idParamValidator, patientValidator, handleValidation, patientController.updatePatient);
-router.delete('/:id', authenticateToken, idParamValidator, handleValidation, patientController.deletePatient);
-
-module.exports = router;
+};

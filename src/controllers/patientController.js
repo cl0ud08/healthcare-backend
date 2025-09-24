@@ -23,7 +23,9 @@ exports.getPatients = async (req, res, next) => {
 
 exports.getPatientById = async (req, res, next) => {
   try {
-    const patient = await prisma.patient.findUnique({ where: { id: Number(req.params.id), userId: req.user.id } });
+    const patient = await prisma.patient.findFirst({ 
+      where: { id: Number(req.params.id), userId: req.user.id } 
+    });
     if (!patient) return res.status(404).json({ error: 'Patient not found' });
     res.json(patient);
   } catch (err) {
@@ -34,13 +36,14 @@ exports.getPatientById = async (req, res, next) => {
 exports.updatePatient = async (req, res, next) => {
   try {
     const { name, age, gender } = req.body;
-    const patientExists = await prisma.patient.findUnique({ where: { id: Number(req.params.id), userId: req.user.id } });
-    if (!patientExists) {
-      return res.status(404).json({ error: 'Patient not found' });
-    }
+    const patientExists = await prisma.patient.findFirst({
+      where: { id: Number(req.params.id), userId: req.user.id }
+    });
+    if (!patientExists) return res.status(404).json({ error: 'Patient not found' });
+
     const patient = await prisma.patient.update({
-      where: { id: Number(req.params.id), userId: req.user.id },
-      data: { name, age, gender },
+      where: { id: Number(req.params.id) },
+      data: { name, age, gender }
     });
     res.json(patient);
   } catch (err) {
@@ -50,11 +53,12 @@ exports.updatePatient = async (req, res, next) => {
 
 exports.deletePatient = async (req, res, next) => {
   try {
-    const patient = await prisma.patient.findUnique({ where: { id: Number(req.params.id), userId: req.user.id } });
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
-    }
-    await prisma.patient.delete({ where: { id: Number(req.params.id), userId: req.user.id } });
+    const patientExists = await prisma.patient.findFirst({
+      where: { id: Number(req.params.id), userId: req.user.id }
+    });
+    if (!patientExists) return res.status(404).json({ error: 'Patient not found' });
+
+    await prisma.patient.delete({ where: { id: Number(req.params.id) } });
     res.json({ message: 'Patient deleted' });
   } catch (err) {
     next(err);
