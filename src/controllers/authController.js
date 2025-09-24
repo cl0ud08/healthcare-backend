@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../config/db');
-const { jwtSecret } = require('../config/env');
+const { jwtSecret, jwtRefreshSecret } = require('../config/env');
 
 exports.register = async (req, res, next) => {
   try {
@@ -25,8 +25,8 @@ exports.login = async (req, res, next) => {
     if (!user) return res.status(400).json({ error: 'Invalid credentials' });
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ error: 'Invalid credentials' });
-    const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '7d' });
+  const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ id: user.id }, jwtRefreshSecret, { expiresIn: '7d' });
     res.json({ accessToken, refreshToken });
   } catch (err) {
     next(err);

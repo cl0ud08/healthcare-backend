@@ -22,7 +22,9 @@ exports.getDoctors = async (req, res, next) => {
 exports.getDoctorById = async (req, res, next) => {
   try {
     const doctor = await prisma.doctor.findUnique({ where: { id: Number(req.params.id) } });
-    if (!doctor) return res.status(404).json({ error: 'Doctor not found' });
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
     res.json(doctor);
   } catch (err) {
     next(err);
@@ -32,6 +34,10 @@ exports.getDoctorById = async (req, res, next) => {
 exports.updateDoctor = async (req, res, next) => {
   try {
     const { name, specialty } = req.body;
+    const doctorExists = await prisma.doctor.findUnique({ where: { id: Number(req.params.id) } });
+    if (!doctorExists) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
     const doctor = await prisma.doctor.update({
       where: { id: Number(req.params.id) },
       data: { name, specialty },
@@ -44,8 +50,12 @@ exports.updateDoctor = async (req, res, next) => {
 
 exports.deleteDoctor = async (req, res, next) => {
   try {
+    const doctor = await prisma.doctor.findUnique({ where: { id: Number(req.params.id) } });
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
     await prisma.doctor.delete({ where: { id: Number(req.params.id) } });
-    res.json({ message: 'Doctor deleted' });
+    res.status(200).json({ message: 'Doctor deleted successfully' });
   } catch (err) {
     next(err);
   }

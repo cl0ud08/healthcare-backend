@@ -28,7 +28,7 @@ model Patient {
   age       Int
   gender    String
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   mappings  Mapping[]
 }
 
@@ -43,6 +43,6 @@ model Mapping {
   id        Int      @id @default(autoincrement())
   patientId Int
   doctorId  Int
-  patient   Patient  @relation(fields: [patientId], references: [id])
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }

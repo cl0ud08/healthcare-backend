@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mappingController = require('../controllers/mappingController');
 const authenticateToken = require('../middlewares/auth');
-const { mappingValidator, idParamValidator } = require('../middlewares/validators');
+const { mappingValidator, idParamValidator, patientIdParamValidator } = require('../middlewares/validators');
 const { validationResult } = require('express-validator');
 
 function handleValidation(req, res, next) {
@@ -15,7 +15,7 @@ function handleValidation(req, res, next) {
 
 router.post('/', authenticateToken, mappingValidator, handleValidation, mappingController.createMapping);
 router.get('/', authenticateToken, mappingController.getMappings);
-router.get('/:patientId', authenticateToken, idParamValidator, handleValidation, mappingController.getMappingsByPatient);
+router.get('/:patientId', authenticateToken, patientIdParamValidator, handleValidation, mappingController.getMappingsByPatient);
 router.delete('/:id', authenticateToken, idParamValidator, handleValidation, mappingController.deleteMapping);
 
 module.exports = router;

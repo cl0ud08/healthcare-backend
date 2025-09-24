@@ -30,3 +30,7 @@ exports.mappingValidator = [
 exports.idParamValidator = [
   param('id').isInt().withMessage('Valid ID is required'),
 ];
+
+exports.patientIdParamValidator = [
+  param('patientId').isInt().withMessage('Valid patientId is required'),
+];
