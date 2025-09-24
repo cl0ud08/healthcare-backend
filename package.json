@@ -19,5 +19,8 @@
   "devDependencies": {
     "nodemon": "^3.0.1",
     "prisma": "^6.16.2"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
