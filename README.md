@@ -21,6 +21,7 @@ This project provides a secure and scalable backend for managing patients, docto
 - MVC architecture
 - Centralized error handling
 - Input validation
+- Role-based access control for doctor management (admin only)
 
 ## Tech Stack
 - Node.js + Express.js
@@ -88,6 +89,7 @@ All protected routes require a Bearer Token in the Authorization header.
 | ------ | -------------------- | --------------------------------- | ------------- | ------------------------------------------ |
 | `POST` | `/api/auth/register` | Register a new user.              | No            | `{ "name": "...", "email": "...", "password": "..." }` |
 | `POST` | `/api/auth/login`    | Log in a user and get JWT tokens. | No            | `{ "email": "...", "password": "..." }`         |
+| `POST` | `/api/auth/refresh`  | Get a new access token using a refresh token. | No | `{ "refreshToken": "..." }` |
 
 ### Patient Management
 
@@ -103,11 +105,11 @@ All protected routes require a Bearer Token in the Authorization header.
 
 | Method   | Endpoint           | Description                         | Auth Required | Request Body Example                        |
 | -------- | ------------------ | ----------------------------------- | ------------- | ------------------------------------------- |
-| `POST`   | `/api/doctors`     | Add a new doctor.                   | Yes           | `{ "name": "...", "specialty": "..." }`         |
+| `POST`   | `/api/doctors`     | Add a new doctor.                   | Yes (admin)   | `{ "name": "...", "specialty": "..." }`         |
 | `GET`    | `/api/doctors`     | Get all doctors.                    | Yes           | -                                           |
 | `GET`    | `/api/doctors/:id` | Get a specific doctor by ID.        | Yes           | -                                           |
-| `PUT`    | `/api/doctors/:id` | Update a doctor's details.          | Yes           | `{ "name": "...", "specialty": "..." }`         |
-| `DELETE` | `/api/doctors/:id` | Delete a doctor.                    | Yes           | -                                           |
+| `PUT`    | `/api/doctors/:id` | Update a doctor's details.          | Yes (admin)   | `{ "name": "...", "specialty": "..." }`         |
+| `DELETE` | `/api/doctors/:id` | Delete a doctor.                    | Yes (admin)   | -                                           |
 
 ### Patient-Doctor Mapping
 
