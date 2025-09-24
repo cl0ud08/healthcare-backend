@@ -44,5 +44,5 @@ model Mapping {
   patientId Int
   doctorId  Int
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 }

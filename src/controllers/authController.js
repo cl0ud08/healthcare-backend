@@ -1,3 +1,18 @@
+exports.refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({ error: 'Refresh token required' });
+    }
+    jwt.verify(refreshToken, jwtRefreshSecret, (err, user) => {
+      if (err) return res.status(403).json({ error: 'Invalid refresh token' });
+      const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, { expiresIn: '15m' });
+      res.json({ accessToken });
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../config/db');

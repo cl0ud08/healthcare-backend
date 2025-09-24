@@ -33,6 +33,10 @@ exports.getMappingsByPatient = async (req, res, next) => {
 
 exports.deleteMapping = async (req, res, next) => {
   try {
+    const mapping = await prisma.mapping.findUnique({ where: { id: Number(req.params.id) } });
+    if (!mapping) {
+      return res.status(404).json({ error: 'Mapping not found' });
+    }
     await prisma.mapping.delete({ where: { id: Number(req.params.id) } });
     res.json({ message: 'Mapping deleted' });
   } catch (err) {

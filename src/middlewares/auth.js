@@ -13,3 +13,13 @@ function authenticateToken(req, res, next) {
 }
 
 module.exports = authenticateToken;
+
+// Middleware to authorize admin users
+function authorizeAdmin(req, res, next) {
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ error: 'Forbidden: Admins only' });
+}
+
+module.exports.authorizeAdmin = authorizeAdmin;

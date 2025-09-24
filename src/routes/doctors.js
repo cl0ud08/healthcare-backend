@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const doctorController = require('../controllers/doctorController');
-const authenticateToken = require('../middlewares/auth');
+const { authenticateToken, authorizeAdmin } = require('../middlewares/auth');
 const { doctorValidator, idParamValidator } = require('../middlewares/validators');
 const { validationResult } = require('express-validator');
 
@@ -13,10 +13,10 @@ function handleValidation(req, res, next) {
   next();
 }
 
-router.post('/', authenticateToken, doctorValidator, handleValidation, doctorController.createDoctor);
+router.post('/', authenticateToken, authorizeAdmin, doctorValidator, handleValidation, doctorController.createDoctor);
 router.get('/', authenticateToken, doctorController.getDoctors);
 router.get('/:id', authenticateToken, idParamValidator, handleValidation, doctorController.getDoctorById);
-router.put('/:id', authenticateToken, idParamValidator, doctorValidator, handleValidation, doctorController.updateDoctor);
-router.delete('/:id', authenticateToken, idParamValidator, handleValidation, doctorController.deleteDoctor);
+router.put('/:id', authenticateToken, authorizeAdmin, idParamValidator, doctorValidator, handleValidation, doctorController.updateDoctor);
+router.delete('/:id', authenticateToken, authorizeAdmin, idParamValidator, handleValidation, doctorController.deleteDoctor);
 
 module.exports = router;
