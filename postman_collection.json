@@ -23,6 +23,33 @@
       }
     },
     {
+      "name": "Auth Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        }
+      }
+    },
+    {
       "name": "Create Patient",
       "request": {
         "method": "POST",
@@ -155,31 +182,4 @@
       }
     }
   ]
-}
-{
-  "name": "Auth Refresh Token",
-  "request": {
-    "method": "POST",
-    "header": [
-      {
-        "key": "Content-Type",
-        "value": "application/json"
-      }
-    ],
-    "url": {
-      "raw": "{{baseUrl}}/api/auth/refresh",
-      "host": [
-        "{{baseUrl}}"
-      ],
-      "path": [
-        "api",
-        "auth",
-        "refresh"
-      ]
-    },
-    "body": {
-      "mode": "raw",
-      "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
-    }
-  }
 }

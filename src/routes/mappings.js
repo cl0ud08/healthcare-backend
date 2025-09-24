@@ -3,15 +3,7 @@ const router = express.Router();
 const mappingController = require('../controllers/mappingController');
 const { authenticateToken } = require('../middlewares/auth');
 const { mappingValidator, idParamValidator, patientIdParamValidator } = require('../middlewares/validators');
-const { validationResult } = require('express-validator');
-
-function handleValidation(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
+const handleValidation = require('../middlewares/handleValidation'); // Import the shared middleware
 
 router.post('/', authenticateToken, mappingValidator, handleValidation, mappingController.createMapping);
 router.get('/', authenticateToken, mappingController.getMappings);

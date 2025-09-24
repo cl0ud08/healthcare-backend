@@ -3,15 +3,7 @@ const router = express.Router();
 const doctorController = require('../controllers/doctorController');
 const { authenticateToken, authorizeAdmin } = require('../middlewares/auth');
 const { doctorValidator, idParamValidator } = require('../middlewares/validators');
-const { validationResult } = require('express-validator');
-
-function handleValidation(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
+const handleValidation = require('../middlewares/handleValidation'); // Import the new middleware
 
 router.post('/', authenticateToken, authorizeAdmin, doctorValidator, handleValidation, doctorController.createDoctor);
 router.get('/', authenticateToken, doctorController.getDoctors);
